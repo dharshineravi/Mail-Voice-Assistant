@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI-Powered Dual-Language Voice Assistance System for Visually Impaired Users. Access and manage email using hands-free spoken commands with instant translation.">
+    <title>AI Voice Email Assistant - Dual-Language Voice Guidance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&family=Noto+Sans+Telugu:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-start: #0a1329;
+            --bg-end: #172a53;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-border: rgba(99, 102, 241, 0.35);
+            --text-main: #ffffff;
+            --text-sub: #cbd5e1;
+            --accent-cyan: #38bdf8;
+            --accent-indigo: #6366f1;
+            --accent-green: #22c55e;
+            --accent-red: #ef4444;
+            --accent-amber: #f59e0b;
+            --focus-ring: #facc15;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', 'Noto Sans Tamil', 'Noto Sans Devanagari', 'Noto Sans Telugu', system-ui, sans-serif;
+            min-height: 100vh;
+            background: radial-gradient(circle at 50% 10%, #1e3a8a 0%, var(--bg-start) 60%, #050b18 100%);
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 24px;
+            padding: 32px 28px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 30px rgba(99, 102, 241, 0.18);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid var(--accent-indigo);
+            color: var(--accent-cyan);
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            padding: 5px 14px;
+            border-radius: 9999px;
+            margin-bottom: 12px;
+        }
+
+        h1 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .sub-caption {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            font-weight: 400;
+        }
+
+        .lang-control {
+            margin: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lang-control label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #f1f5f9;
+        }
+
+        select {
+            width: 100%;
+            background: #0f172a;
+            color: #ffffff;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        select:focus, button:focus, input:focus, textarea:focus {
+            outline: 3px solid var(--focus-ring);
+            outline-offset: 2px;
+            border-color: transparent;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 22px 0 16px 0;
+        }
+
+        .btn {
+            font-family: inherit;
+            font-size: 1.25rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 16px;
+            padding: 18px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: transform 0.15s ease, filter 0.15s ease, box-shadow 0.2s ease;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn:hover {
+            filter: brightness(1.12);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #ffffff;
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #ffffff;
+        }
+
+        .quick-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn-quick {
+            flex: 1;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            color: var(--text-sub);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-quick:hover {
+            background: rgba(99, 102, 241, 0.25);
+            color: #fff;
+            border-color: var(--accent-indigo);
+        }
+
+        .status-card {
+            background: #090e1a;
+            border: 2px solid #1e293b;
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+        }
+
+        .status-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #94a3b8;
+            transition: background 0.3s;
+        }
+
+        .status-listening .status-dot {
+            background: var(--accent-green);
+            box-shadow: 0 0 12px var(--accent-green);
+            animation: pulse 1.2s infinite;
+        }
+
+        .status-busy .status-dot {
+            background: var(--accent-amber);
+            box-shadow: 0 0 12px var(--accent-amber);
+            animation: pulse 1s infinite;
+        }
+
+        .status-error .status-dot {
+            background: var(--accent-red);
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.4; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.15); }
+            100% { opacity: 0.4; transform: scale(0.9); }
+        }
+
+        .output-box {
+            background: #020617;
+            border: 2px solid #1e293b;
+            border-radius: 16px;
+            padding: 18px;
+            min-height: 110px;
+            font-size: 1.15rem;
+            line-height: 1.6;
+            margin-bottom: 22px;
+            word-wrap: break-word;
+        }
+
+        .output-tag {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-right: 6px;
+            text-transform: uppercase;
+        }
+
+        .tag-user { background: #334155; color: #38bdf8; }
+        .tag-bot { background: #312e81; color: #a5b4fc; }
+
+        .compose-card {
+            background: rgba(15, 23, 42, 0.95);
+            border: 2px solid var(--accent-indigo);
+            border-radius: 18px;
+            padding: 22px;
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .compose-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 14px;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field-group {
+            margin-bottom: 14px;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-sub);
+        }
+
+        .field-with-mic {
+            display: flex;
+            gap: 8px;
+        }
+
+        input[type="email"], input[type="text"], textarea {
+            width: 100%;
+            background: #020617;
+            border: 2px solid #334155;
+            color: #ffffff;
+            border-radius: 12px;
+            padding: 12px 14px;
+            font-size: 1.05rem;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .mic-inline-btn {
+            background: #1e293b;
+            border: 2px solid #475569;
+            color: #fff;
+            padding: 0 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mic-inline-btn:hover {
+            background: #334155;
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-dispatch {
+            width: 100%;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+
+        .btn-dispatch:hover {
+            filter: brightness(1.15);
+        }
+
+        .shortcuts-hint {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .kbd {
+            background: #1e293b;
+            border: 1px solid #475569;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #e2e8f0;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+<main class="container" role="main" aria-label="AI Voice Email Assistant Interface">
+    <header class="header">
+        <span class="badge" aria-label="Research Paper System">IEEE Project Implementation</span>
+        <h1 id="pageTitle">AI-POWERED DUAL-LANGUAGE VOICE ASSISTANCE SYSTEM</h1>
+        <p class="sub-caption">Assistive Web-Mail Access for Visually Impaired Users</p>
+    </header>
+
+    <div class="lang-control">
+        <label for="languageSelect">Select Voice Output Language (மொழியைத் தேர்ந்தெடுக்கவும்):</label>
+        <select id="languageSelect" aria-label="Output Language Selector">
+            <option value="english" data-code="en" data-rec="en-US">English (Default)</option>
+            <option value="tamil" data-code="ta" data-rec="ta-IN">Tamil (தமிழ்)</option>
+            <option value="hindi" data-code="hi" data-rec="hi-IN">Hindi (हिंदी)</option>
+            <option value="telugu" data-code="te" data-rec="te-IN">Telugu (తెలుగు)</option>
+        </select>
+    </div>
+
+    <div class="button-grid">
+        <button id="startBtn" class="btn btn-start" aria-label="Start Voice Listening (Press Spacebar to activate)">
+            <span aria-hidden="true">🎤</span> Start Voice
+        </button>
+        <button id="stopBtn" class="btn btn-stop" aria-label="Stop Voice Listening and Cancel Speech">
+            <span aria-hidden="true">🛑</span> Stop Voice
+        </button>
+    </div>
+
+    <div class="quick-nav">
+        <button id="quickReadBtn" class="btn-quick" aria-label="Quick Action: Read Latest Mail">
+            📬 Read Latest Mail
+        </button>
+        <button id="quickSendToggleBtn" class="btn-quick" aria-label="Quick Action: Open Send Mail Form">
+            ✉️ Compose Mail
+        </button>
+    </div>
+
+    <section class="status-card" id="statusCard" aria-live="polite">
+        <div class="status-dot" id="statusDot"></div>
+        <div id="statusText">Status: Idle. Press 'Start Voice' or say "Read Mail"</div>
+    </section>
+
+    <section class="output-box" id="outputArea" aria-live="assertive" aria-label="Transcript and Assistant Response">
+        <div><span class="output-tag tag-bot">SYSTEM</span> Ready. Press 'Start Voice' or use shortcuts.</div>
+    </section>
+
+    <section id="composeForm" class="compose-card" aria-label="Email Composition Form">
+        <h3>✉️ Compose Outgoing Email</h3>
+
+        <div class="field-group">
+            <label for="receiverEmail">Receiver Email Address:</label>
+            <div class="field-with-mic">
+                <input type="email" id="receiverEmail" placeholder="recipient@example.com" autocomplete="email">
+                <button type="button" class="mic-inline-btn" data-target="receiverEmail" title="Dictate receiver address" aria-label="Dictate receiver address">🎙️</button>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label for="emailSubject">Subject:</label>
+            <div class="field-with-mic">
+                <input type="text" id="emailSubject" placeholder="Email subject">
+                <button type="button" class="mic-inline-btn" data-target="emailSubject" title="Dictate subject" aria-label="Dictate subject">🎙️</button>
+            </div>
+        </div>
+
+        <div class="field-group">
+            <label for="emailBody">Message Body:</label>
+            <div class="field-with-mic">
+                <textarea id="emailBody" placeholder="Dictate or type your message here..."></textarea>
+                <button type="button" class="mic-inline-btn" data-target="emailBody" title="Dictate message body" aria-label="Dictate message body">🎙️</button>
+            </div>
+        </div>
+
+        <button id="sendSubmitBtn" class="btn-dispatch" onclick="submitEmailForm()">
+            🚀 Send Email Now
+        </button>
+    </section>
+
+    <footer class="shortcuts-hint">
+        Accessibility Shortcuts: <span class="kbd">Space</span> or <span class="kbd">R</span> = Start/Speak | <span class="kbd">Esc</span> = Stop | High contrast & Screen-Reader Optimized
+    </footer>
+</main>
+
+<script>
+    const LOCALE_MAP = {
+        english: { lang: "en-US", code: "en" },
+        tamil: { lang: "ta-IN", code: "ta" },
+        hindi: { lang: "hi-IN", code: "hi" },
+        telugu: { lang: "te-IN", code: "te" }
+    };
+
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const quickReadBtn = document.getElementById("quickReadBtn");
+    const quickSendToggleBtn = document.getElementById("quickSendToggleBtn");
+    const statusCard = document.getElementById("statusCard");
+    const statusText = document.getElementById("statusText");
+    const outputArea = document.getElementById("outputArea");
+    const langSelect = document.getElementById("languageSelect");
+    const composeForm = document.getElementById("composeForm");
+
+    let recognition = null;
+    let isListening = false;
+    let availableVoices = [];
+
+    function populateVoices() {
+        if ('speechSynthesis' in window) {
+            availableVoices = window.speechSynthesis.getVoices();
+        }
+    }
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = populateVoices;
+        populateVoices();
+    }
+
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRec) {
+        recognition = new SpeechRec();
+        recognition.continuous = false;
+        recognition.interimResults = false;
+    }
+
+    function setStatus(text, stateClass = "") {
+        statusText.textContent = "Status: " + text;
+        statusCard.className = "status-card " + stateClass;
+    }
+
+    function speakText(text, targetLangName) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+
+        const conf = LOCALE_MAP[targetLangName] || LOCALE_MAP.english;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = conf.lang;
+        utterance.rate = 0.95;
+        utterance.pitch = 1.0;
+
+        // Try picking best matched voice
+        if (availableVoices.length > 0) {
+            const matchedVoice = availableVoices.find(v => v.lang.toLowerCase().startsWith(conf.code));
+            if (matchedVoice) {
+                utterance.voice = matchedVoice;
+            }
+        }
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function startListening(customTargetId = null) {
+        if (!recognition) {
+            alert("Speech recognition is only supported in Chrome or Chromium browsers.");
+            return;
+        }
+        window.speechSynthesis.cancel();
+
+        const selectedLang = langSelect.value;
+        const conf = LOCALE_MAP[selectedLang] || LOCALE_MAP.english;
+        recognition.lang = conf.lang;
+
+        try {
+            recognition.start();
+            isListening = true;
+            setStatus("Listening... Speak now", "status-listening");
+        } catch (e) {
+            console.warn("Recognition already active", e);
+        }
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            isListening = false;
+
+            if (customTargetId) {
+                const targetEl = document.getElementById(customTargetId);
+                if (targetEl) targetEl.value = transcript;
+                setStatus("Dictated text captured", "");
+                return;
+            }
+
+            outputArea.innerHTML = `<div><span class="output-tag tag-user">YOU</span> ${escapeHtml(transcript)}</div>`;
+            setStatus("Processing command...", "status-busy");
+
+            fetch("/command", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    command: transcript,
+                    language: selectedLang
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                const reply = data.response || "No response received";
+                outputArea.innerHTML += `<div style="margin-top:12px;"><span class="output-tag tag-bot">ASSISTANT</span> ${escapeHtml(reply)}</div>`;
+                
+                if (data.action === "send") {
+                    composeForm.style.display = "block";
+                    composeForm.scrollIntoView({ behavior: 'smooth' });
+                }
+
+                setStatus("Completed", "");
+                speakText(reply, selectedLang);
+            })
+            .catch(err => {
+                setStatus("Network Error", "status-error");
+                outputArea.innerHTML += `<div style="color:var(--accent-red); margin-top:8px;">Failed to connect to backend server.</div>`;
+            });
+        };
+
+        recognition.onerror = (event) => {
+            isListening = false;
+            setStatus("Speech error: " + event.error, "status-error");
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            if (!statusCard.className.includes("status-busy")) {
+                setStatus("Idle", "");
+            }
+        };
+    }
+
+    function stopListening() {
+        if (recognition && isListening) {
+            recognition.stop();
+        }
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+        }
+        isListening = false;
+        setStatus("Stopped", "");
+    }
+
+    function triggerReadEmail() {
+        const selectedLang = langSelect.value;
+        setStatus("Fetching latest email...", "status-busy");
+        outputArea.innerHTML = `<div><span class="output-tag tag-bot">ASSISTANT</span> Fetching the latest unread email from your inbox...</div>`;
+
+        fetch("/read_mail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ language: selectedLang })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const reply = data.response || "No email retrieved";
+            outputArea.innerHTML = `<div><span class="output-tag tag-bot">ASSISTANT</span> ${escapeHtml(reply)}</div>`;
+            setStatus("Completed", "");
+            speakText(reply, selectedLang);
+        })
+        .catch(err => {
+            setStatus("Error fetching email", "status-error");
+            outputArea.innerHTML = `<div style="color:var(--accent-red)">Error communicating with email server.</div>`;
+        });
+    }
+
+    function submitEmailForm() {
+        const receiver = document.getElementById("receiverEmail").value;
+        const subject = document.getElementById("emailSubject").value;
+        const message = document.getElementById("emailBody").value;
+        const selectedLang = langSelect.value;
+
+        if (!receiver || !message) {
+            alert("Please fill in at least the receiver address and message body.");
+            return;
+        }
+
+        setStatus("Sending email...", "status-busy");
+
+        fetch("/send_mail", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                receiver: receiver,
+                subject: subject,
+                message: message,
+                language: selectedLang
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            const reply = data.text || "Email dispatch completed";
+            outputArea.innerHTML += `<div style="margin-top:12px;"><span class="output-tag tag-bot">ASSISTANT</span> ${escapeHtml(reply)}</div>`;
+            setStatus("Completed", "");
+            speakText(reply, selectedLang);
+
+            if (data.success) {
+                document.getElementById("receiverEmail").value = "";
+                document.getElementById("emailSubject").value = "";
+                document.getElementById("emailBody").value = "";
+                composeForm.style.display = "none";
+            }
+        })
+        .catch(err => {
+            setStatus("Failed to send", "status-error");
+        });
+    }
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    // Attach listeners
+    startBtn.addEventListener("click", () => startListening());
+    stopBtn.addEventListener("click", stopListening);
+    quickReadBtn.addEventListener("click", triggerReadEmail);
+    quickSendToggleBtn.addEventListener("click", () => {
+        composeForm.style.display = composeForm.style.display === "none" || !composeForm.style.display ? "block" : "none";
+    });
+
+    document.querySelectorAll(".mic-inline-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const targetId = btn.getAttribute("data-target");
+            startListening(targetId);
+        });
+    });
+
+    // Keyboard accessibility for visually impaired users (Space to talk, Escape to cancel)
+    window.addEventListener("keydown", (e) => {
+        const tag = e.target.tagName.toLowerCase();
+        if (tag === "input" || tag === "textarea") return;
+
+        if (e.code === "Space" || e.key === "r" || e.key === "R") {
+            e.preventDefault();
+            startListening();
+        } else if (e.code === "Escape") {
+            e.preventDefault();
+            stopListening();
+        }
+    });
+</script>
+
+</body>
+</html>
